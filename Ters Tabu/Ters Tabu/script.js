@@ -132,24 +132,69 @@ class TersTabuGame {
                 ]
             }
         ];
-        this.currentExampleIndex = null;
-        this.failedAfterHints = false;
-        this.initGame();
+        this.totalScore = 0;
+        this.timer = null;
+        this.timeLeft = 30;
+        this.isStarted = false;
         this.initElements();
         this.bindEvents();
+        this.setInitialState();
     }
 
-    getRandomExampleIndex() {
-        let idx;
-        do {
-            idx = Math.floor(Math.random() * this.examples.length);
-        } while (this.examples.length > 1 && idx === this.currentExampleIndex);
-        return idx;
+    setInitialState() {
+        this.isStarted = false;
+        this.totalScore = 0;
+        this.cardQueue = this.shuffle([...this.examples]);
+        this.currentCardIndex = 0;
+        this.hintBtn.disabled = true;
+        this.guessBtn.disabled = true;
+        this.guessInput.disabled = true;
+        this.hintBtn.style.opacity = 0.5;
+        this.guessBtn.style.opacity = 0.5;
+        this.guessInput.style.opacity = 0.5;
+        this.nextBtn.style.display = "none";
+        this.passBtn.style.display = "none";
+        this.hintDisplay.textContent = "İpucu almak için butona tıklayın";
+        this.hintCounter.textContent = "Kalan ipucu hakkı: 3";
+        this.timerEl.textContent = "30";
+        this.message.textContent = "";
+        this.startBtn.style.display = "inline-block";
+        this.updateScore();
+        this.updateCardCounter();
+        this.hideGameOverScreen();
+    }
+
+    shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    updateCardCounter() {
+        const total = this.cardQueue.length;
+        const current = Math.min(this.currentCardIndex + 1, total);
+        this.cardCounterEl.textContent = `Kart: ${current}/${total}`;
+    }
+
+    startGame() {
+        this.isStarted = true;
+        this.totalScore = 0;
+        this.cardQueue = this.shuffle([...this.examples]);
+        this.currentCardIndex = 0;
+        this.initGame();
+        this.initUIForGame();
+        this.updateCardCounter();
+        this.hideGameOverScreen();
     }
 
     initGame() {
-        this.currentExampleIndex = this.getRandomExampleIndex();
-        const example = this.examples[this.currentExampleIndex];
+        if (this.currentCardIndex >= this.cardQueue.length) {
+            this.showGameOverScreen();
+            return;
+        }
+        const example = this.cardQueue[this.currentCardIndex];
         this.targetWord = example.targetWord;
         this.forbiddenWords = example.forbiddenWords;
         this.hints = example.hints;
@@ -158,6 +203,33 @@ class TersTabuGame {
         this.attemptCount = 0;
         this.gameEnded = false;
         this.failedAfterHints = false;
+        this.timeLeft = 30;
+        this.clearTimer();
+        this.startTimer();
+        this.updateCardCounter();
+    }
+
+    initUIForGame() {
+        this.updateForbiddenWords();
+        this.updateHintCounter();
+        this.updateStats();
+        this.hintDisplay.textContent = "İpucu almak için butona tıklayın";
+        this.hintBtn.disabled = false;
+        this.hintBtn.style.opacity = 1;
+        this.hintBtn.textContent = "💡 İpucu Al";
+        this.guessBtn.textContent = "🎯 Tahmin Et";
+        this.guessBtn.disabled = false;
+        this.guessBtn.style.opacity = 1;
+        this.guessInput.disabled = false;
+        this.guessInput.style.opacity = 1;
+        this.guessInput.value = "";
+        this.nextBtn.style.display = "none";
+        this.passBtn.style.display = "inline-block";
+        this.startBtn.style.display = "none";
+        this.updateScore();
+        this.updateTimer();
+        this.message.textContent = "";
+        this.updateCardCounter();
     }
 
     initElements() {
@@ -171,16 +243,14 @@ class TersTabuGame {
         this.hintUsedEl = document.getElementById('hintUsed');
         this.wordsList = document.getElementById('wordsList');
         this.nextBtn = document.getElementById('nextBtn');
-        this.updateForbiddenWords();
-        this.updateHintCounter();
-        this.updateStats();
-        this.hintDisplay.textContent = "İpucu almak için butona tıklayın";
-        this.hintBtn.disabled = false;
-        this.hintBtn.textContent = "💡 İpucu Al";
-        this.guessBtn.textContent = "🎯 Tahmin Et";
-        this.guessBtn.disabled = false;
-        this.guessInput.value = "";
-        this.nextBtn.style.display = "none";
+        this.passBtn = document.getElementById('passBtn');
+        this.totalScoreEl = document.getElementById('totalScore');
+        this.timerEl = document.getElementById('timer');
+        this.startBtn = document.getElementById('startBtn');
+        this.cardCounterEl = document.getElementById('cardCounter');
+        this.gameOverScreen = document.getElementById('gameOverScreen');
+        this.finalScoreEl = document.getElementById('finalScore');
+        this.restartBtn = document.getElementById('restartBtn');
     }
 
     updateForbiddenWords() {
@@ -194,14 +264,17 @@ class TersTabuGame {
     }
 
     bindEvents() {
-        this.hintBtn.onclick = () => this.showHint();
-        this.guessBtn.onclick = () => this.makeGuess();
+        this.hintBtn.onclick = () => this.isStarted && this.showHint();
+        this.guessBtn.onclick = () => this.isStarted && this.makeGuess();
         this.guessInput.onkeypress = (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && this.isStarted) {
                 this.makeGuess();
             }
         };
-        this.nextBtn.onclick = () => this.nextQuestion();
+        this.nextBtn.onclick = () => this.isStarted && this.nextQuestion();
+        this.passBtn.onclick = () => this.isStarted && !this.gameEnded && this.passQuestion();
+        this.startBtn.onclick = () => this.startGame();
+        this.restartBtn.onclick = () => this.setInitialState();
     }
 
     showHint() {
@@ -239,15 +312,26 @@ class TersTabuGame {
             this.guessBtn.disabled = true;
             this.hintBtn.disabled = true;
             this.nextBtn.style.display = "inline-block";
+            this.passBtn.style.display = "none";
+            this.clearTimer();
             return;
         }
         if (guess === this.targetWord) {
-            this.showMessage("🎉 Tebrikler! Doğru tahmin ettiniz!", "success");
+            let puan = 0;
+            if (this.currentHint === 0) puan = 30;
+            else if (this.currentHint === 1) puan = 20;
+            else if (this.currentHint === 2) puan = 10;
+            else puan = 10;
+            this.totalScore += puan;
+            this.updateScore();
+            this.showMessage(`🎉 Tebrikler! Doğru tahmin ettiniz! (+${puan} puan)`, "success");
             this.gameEnded = true;
             this.guessBtn.textContent = "Oyun Bitti";
             this.guessBtn.disabled = true;
             this.hintBtn.disabled = true;
             this.nextBtn.style.display = "inline-block";
+            this.passBtn.style.display = "none";
+            this.clearTimer();
         } else {
             if (this.hintsRemaining === 0) {
                 this.failedAfterHints = true;
@@ -257,6 +341,8 @@ class TersTabuGame {
                 this.guessBtn.disabled = true;
                 this.hintBtn.disabled = true;
                 this.nextBtn.style.display = "inline-block";
+                this.passBtn.style.display = "none";
+                this.clearTimer();
             } else {
                 this.showMessage(`"${guess}" yanlış tahmin. Tekrar deneyin!`, "error");
             }
@@ -265,8 +351,17 @@ class TersTabuGame {
     }
 
     nextQuestion() {
+        this.currentCardIndex++;
         this.initGame();
-        this.initElements();
+        this.initUIForGame();
+    }
+
+    passQuestion() {
+        // Kartı sona ekle, index bir artır
+        this.cardQueue.push(this.cardQueue[this.currentCardIndex]);
+        this.currentCardIndex++;
+        this.initGame();
+        this.initUIForGame();
     }
 
     showMessage(text, type) {
@@ -285,6 +380,49 @@ class TersTabuGame {
     updateStats() {
         this.attemptCountEl.textContent = this.attemptCount;
         this.hintUsedEl.textContent = this.hints.length - this.hintsRemaining;
+    }
+
+    updateScore() {
+        this.totalScoreEl.textContent = this.totalScore;
+    }
+
+    startTimer() {
+        this.updateTimer();
+        this.timer = setInterval(() => {
+            this.timeLeft--;
+            this.updateTimer();
+            if (this.timeLeft <= 0) {
+                this.clearTimer();
+                this.showMessage(`Süre doldu! Doğru cevap: ${this.targetWord}`, "error");
+                this.gameEnded = true;
+                this.guessBtn.textContent = "Oyun Bitti";
+                this.guessBtn.disabled = true;
+                this.hintBtn.disabled = true;
+                this.nextBtn.style.display = "inline-block";
+                this.passBtn.style.display = "none";
+            }
+        }, 1000);
+    }
+
+    updateTimer() {
+        this.timerEl.textContent = this.timeLeft;
+    }
+
+    clearTimer() {
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+    }
+
+    showGameOverScreen() {
+        this.isStarted = false;
+        this.gameOverScreen.style.display = "flex";
+        this.finalScoreEl.textContent = this.totalScore;
+    }
+
+    hideGameOverScreen() {
+        this.gameOverScreen.style.display = "none";
     }
 }
 

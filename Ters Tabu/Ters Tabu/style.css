@@ -169,6 +169,25 @@ h1 {
     box-shadow: 0 6px 16px rgba(255, 167, 38, 0.4);
 }
 
+#passBtn {
+    background: linear-gradient(135deg, #ffa726, #ff7043);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 167, 38, 0.3);
+    margin-top: 10px;
+    display: inline-block;
+}
+
+#passBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 167, 38, 0.4);
+}
+
 .message {
     padding: 15px;
     border-radius: 10px;
@@ -223,6 +242,47 @@ h1 {
     color: #666;
     font-size: 0.9em;
     margin-top: 5px;
+}
+
+.score-board {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #ff7043;
+    background: #fff3e0;
+    padding: 6px 18px;
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(255, 167, 38, 0.08);
+    display: inline-block;
+}
+
+.timer {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #5a4fcf;
+    background: #ede7f6;
+    padding: 6px 18px;
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+    display: inline-block;
+}
+
+#retryBtn {
+    background: linear-gradient(135deg, #ffa726, #ff7043);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 167, 38, 0.3);
+    margin-top: 10px;
+    display: inline-block;
+}
+
+#retryBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 167, 38, 0.4);
 }
 
 @media (max-width: 480px) {
