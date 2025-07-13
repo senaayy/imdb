@@ -1,0 +1,222 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.game-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+h1 {
+    color: #5a4fcf;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.subtitle {
+    color: #666;
+    font-size: 1.1em;
+    margin-bottom: 30px;
+}
+
+.forbidden-words {
+    background: linear-gradient(135deg, #ff6b6b, #ffa726);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 16px rgba(255, 107, 107, 0.3);
+}
+
+.forbidden-words h3 {
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.words-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.word-tag {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 500;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.hints-section {
+    margin-bottom: 30px;
+}
+
+.hint-button {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.hint-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.hint-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hint-counter {
+    margin-top: 10px;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.hint-display {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 15px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-style: italic;
+}
+
+.guess-section {
+    margin-bottom: 30px;
+}
+
+.guess-input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    transition: border-color 0.3s ease;
+}
+
+.guess-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.guess-button {
+    background: linear-gradient(135deg, #ffa726, #ff7043);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 167, 38, 0.3);
+}
+
+.guess-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 167, 38, 0.4);
+}
+
+.message {
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.message.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.message.success {
+    background: linear-gradient(135deg, #4caf50, #66bb6a);
+    color: white;
+}
+
+.message.error {
+    background: linear-gradient(135deg, #f44336, #ef5350);
+    color: white;
+}
+
+.message.warning {
+    background: linear-gradient(135deg, #ff9800, #ffa726);
+    color: white;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #e8eaf6, #f3e5f5);
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #d1c4e9;
+}
+
+.stat-value {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #5a4fcf;
+}
+
+.stat-label {
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+@media (max-width: 480px) {
+    .game-container {
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+    
+    .words-list {
+        flex-direction: column;
+        align-items: center;
+    }
+}
