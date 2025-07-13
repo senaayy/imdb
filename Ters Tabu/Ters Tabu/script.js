@@ -419,6 +419,23 @@ class TersTabuGame {
         this.isStarted = false;
         this.gameOverScreen.style.display = "flex";
         this.finalScoreEl.textContent = this.totalScore;
+        // Dinamik unvan aralıkları
+        const maxScore = this.examples.length * 30;
+        let title = "Çaylak";
+        if (this.totalScore >= 0.81 * maxScore) title = "Efsane";
+        else if (this.totalScore >= 0.52 * maxScore) title = "Uzman";
+        else if (this.totalScore >= 0.24 * maxScore) title = "Orta Seviye";
+        // Unvanı ekrana yaz
+        let titleDiv = document.getElementById('finalTitle');
+        if (!titleDiv) {
+            titleDiv = document.createElement('div');
+            titleDiv.id = 'finalTitle';
+            titleDiv.style.fontSize = '1.5em';
+            titleDiv.style.fontWeight = 'bold';
+            titleDiv.style.marginBottom = '12px';
+            this.finalScoreEl.parentNode.insertBefore(titleDiv, this.finalScoreEl);
+        }
+        titleDiv.textContent = `Unvanınız: ${title}`;
     }
 
     hideGameOverScreen() {
