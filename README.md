@@ -28,7 +28,6 @@ Günümüzde binlerce film arasından kendimize uygun bir film seçmek zor olabi
 - 🧠 **NLP Destekli Arama:** Serbest metinle film arama
 - 📊 **Akıllı Sıralama:** Benzerlik skoru, IMDb puanı ve oy sayısına göre sıralama
 - 🖥️ **Modern Arayüz:** Gradio tabanlı kullanıcı dostu arayüz
-- 🖼️ **Zengin Sunum:** Film posteri, puanı, yönetmeni ve oyuncularıyla birlikte görsel öneriler
 
 ---
 
